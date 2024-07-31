@@ -6,7 +6,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
 from src.components.data_transformation import DataTransformation,DataTransformationConfig
-
+from src.components.model_trainer import ModelTrainerConfig
+from src.components.model_trainer import ModelTrainer
 
 @dataclass
 class DataIngestionConfig:
@@ -21,7 +22,7 @@ class DataIngestion:
         logging.info("Entered the data ingestion")
         try:
             ##for any project you just need to change the source
-            df=pd.read_csv("notebook\data\stud.csv")
+            df=pd.read_csv(r"notebook\data\stud.csv")
             logging.info("read the dataset as dataframe")
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
             df.to_csv(self.ingestion_config.raw_data_path,index=False,header=True)
@@ -43,5 +44,7 @@ if __name__=="__main__":
     train_data,test_data=obj.intiate_data_ingestion()
 
     data_transformation=DataTransformation()
-    data_transformation.intiate_data_transformation(train_data,test_data)
+    train_arr,test_arr,_=data_transformation.intiate_data_transformation(train_data,test_data)
 
+    model_trainer=ModelTrainer()
+    print(model_trainer.intiate_model_trainer(train_arr,test_arr))
